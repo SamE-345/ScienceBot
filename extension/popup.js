@@ -7,5 +7,15 @@ document.getElementById("submit").addEventListener("click", async () => {
   });
 
   const data = await res.json();
-  document.getElementById("output").innerText = data.explanation;
+  if (data.explanation) {
+    const outputDiv = document.getElementById("output");
+    outputDiv.innerHTML = data.explanation;
+    if (window.MathJax && window.MathJax.typesetPromise) {
+      MathJax.typesetPromise([outputDiv]);
+    }
+  } else if (data.error) {
+    document.getElementById("output").innerText = "Error: " + data.error + (data.details ? "\n" + JSON.stringify(data.details) : "");
+  } else {
+    document.getElementById("output").innerText = "Unexpected response from server.";
+  }
 });
